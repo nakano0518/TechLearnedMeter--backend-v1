@@ -14,11 +14,13 @@ RUN apk update \
   && apk add git \
   && go install github.com/cosmtrek/air@latest
 
-COPY go.mod .
-COPY go.sum .
+COPY ./go.mod .
+COPY ./go.sum .
 RUN go mod download
 
-COPY *.go .
+COPY ./*.go .
+
+EXPOSE 5000
 
 # --------------------------------------------------
 FROM golang:1.16-alpine as build

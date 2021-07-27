@@ -2,7 +2,8 @@ version: "3.7"
 services:
   db:
     build:
-      context: "./docker/db"
+      context: .
+      dockerfile: "./docker/db/Dockerfile"
     environment:
       IMPORT_FROM_DIR: /data
       POSTGRES_USER: postgres
@@ -16,7 +17,8 @@ services:
       - ./db/storage:/var/lib/postgresql/data #データの永続化
   api:
     build:
-      context: "./docker/api"
+      context: .
+      dockerfile: "./docker/api/Dockerfile"
       target: dev
     depends_on:
       - db
