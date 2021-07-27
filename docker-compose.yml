@@ -1,0 +1,28 @@
+version: "3.7"
+services:
+  db:
+    build:
+      context: "./docker/db"
+    environment:
+      IMPORT_FROM_DIR: /data
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - ./db/sh:/docker-entrypoint-initdb.d # この中の.sh、.sqlファイルは自動実行される
+      - ./db/data:/data # 本番環境等からダンプしたデータ(*.dump)はdocker起動時にDBへ格納するようにしている(init.sh)
+      - ./db/storage:/var/lib/postgresql/data #データの永続化
+  api:
+    build:
+      context: "./docker/api"
+      target: dev
+    depends_on:
+      - db
+    command: "air -c .air.toml"
+    ports:
+      - 5000:5000
+    volumes:
+      - ./:/go/dev
+    tty: true
